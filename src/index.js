@@ -17,10 +17,16 @@ export default {
     
     if (request.method === 'POST' && url.pathname === '/oauth/token') {
       try {
-        if (!env.GITHUB_CLIENT_ID || !env.GITHUB_CLIENT_SECRET) {
+        const { code, redirect_uri, environment } = await request.json();
+        
+        const isProduction = environment === 'production';
+        const clientId = isProduction ? env.GITHUB_CLIENT_ID_PROD : env.GITHUB_CLIENT_ID;
+        const clientSecret = isProduction ? env.GITHUB_CLIENT_SECRET_PROD : env.GITHUB_CLIENT_SECRET;
+
+        if (!clientId || !clientSecret) {
           return new Response(JSON.stringify({ 
             error: 'server_error',
-            error_description: 'Server configuration incomplete' 
+            error_description: `Server configuration incomplete for ${isProduction ? 'production' : 'development'} environment` 
           }), {
             status: 500,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -37,8 +43,6 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
-
-        const { code, code_verifier, redirect_uri } = await request.json();
 
         if (!code || !redirect_uri) {
           return new Response(JSON.stringify({ 
@@ -58,8 +62,8 @@ export default {
             'User-Agent': 'MobileCardBox-AuthServer/1.0',
           },
           body: JSON.stringify({
-            client_id: env.GITHUB_CLIENT_ID,
-            client_secret: env.GITHUB_CLIENT_SECRET,
+            client_id: clientId,
+            client_secret: clientSecret,
             code: code,
             redirect_uri: redirect_uri,
           }),
