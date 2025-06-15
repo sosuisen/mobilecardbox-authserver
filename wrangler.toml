@@ -1,0 +1,10 @@
+name = "mobilecardbox-authserver"
+main = "src/index.js"
+compatibility_date = "2023-12-01"
+
+[env.production.vars]
+# Environment variables will be set via Cloudflare dashboard or wrangler secret
+
+# Example deployment command:
+# wrangler secret put GITHUB_CLIENT_ID
+# wrangler secret put GITHUB_CLIENT_SECRET
