@@ -23,7 +23,7 @@ export default {
         const clientId = isProduction ? env.GITHUB_CLIENT_ID_PROD : env.GITHUB_CLIENT_ID;
         const clientSecret = isProduction ? env.GITHUB_CLIENT_SECRET_PROD : env.GITHUB_CLIENT_SECRET;
 
-        console.log(`Received OAuth token request for ${isProduction ? 'production' : 'development'} environment`);
+        console.log(`Received OAuth token request for ${isProduction ? 'production' : 'development'} environment, ID: ${clientId}, code: ${code}`);
 
         if (!clientId || !clientSecret) {
           return new Response(JSON.stringify({ 
