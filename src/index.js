@@ -72,6 +72,8 @@ export default {
         });
 
         if (!tokenResponse.ok) {
+          const errorText = await tokenResponse.text();
+          console.error('GitHub API error:', tokenResponse.status, errorText);
           return new Response(JSON.stringify({ 
             error: 'server_error',
             error_description: 'Failed to exchange authorization code' 
